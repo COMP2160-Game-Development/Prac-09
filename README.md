@@ -23,7 +23,7 @@ The framework for today implements the general environment, including a "BumperP
 * Bumper: A cube with a texture and a Collider and a Rigidbody. Examine the Rigidbody component in the Inspector, with reference to the Rigidbody Scripting Reference: https://docs.unity3d.com/ScriptReference/Rigidbody.html. Make sure you know what is going on.
 * Label: A world-space canvas with a Text object. We will edit this text so can see which physics implementation is which.
 
-There is also a `PlayerActions` InputActionsAsset and related script. Take a look, as you'll need to add this input into your scripts.
+There is also a `PlayerActions` InputActionsAsset and related script.
 
 ## Step 1 – Adding Forces (20 min) 
 
@@ -32,7 +32,7 @@ We will use our first Bumper prefab to begin experimenting with movement. Our go
 
 Up to now, we've moved everything using the transform component. While this is suitable for games that do not simulate physics, if we wanted to have our bumper react to other objects and external forces (like gravity), we need to start using the Physics engine. For this, we will be using the Rigidbody in non-kinematic mode, and normal Colliders over Triggers.
 
-Create a new script for our Bumper object. Remember to give it a meaningful name. I will be referring to it as the `Bumper` script throughout this sheet for clarity.
+We have provided a `Bumper` script with the necessary Input set-up already done.
 
 As our object is going to be dependent on physics, we need to make sure the Rigidbody component isn't accidentally destroyed or removed. Above the class header for `Bumper`, add the directive `[RequireComponent(typeof(Rigidbody))]`.
 
@@ -50,8 +50,6 @@ Awake()
     rigidbody = GetComponent<Rigidbody>();
 }
 ```
-
-Now, add in the necessary code to read the "Bump" Input Action from the PlayerActions class. If you can't remember how to do this, revisit the Week 2 prac and ask your demonstrator for help. Remember you need to enable actions before you can read them.
 
 Once you have done all of this, attach the `Bumper` script to the `Bumper` prefab.
 
