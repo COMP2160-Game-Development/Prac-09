@@ -8,7 +8,7 @@
 ## Non-Discussion Question
 There is no discussion question today. Happy coding!
 
-<img src="images/codingdog.gif" alt="a happy dog coding. Image source: https://es.pixilart.com/art/coding-dogo-sr2712ab0b35ecd" width="300" />
+<img src="images/codingdog.gif" alt="a happy dog coding. Image source: https://es.pixilart.com/art/coding-dogo-sr2712ab0b35ecd" width="100"/>
 
 ## Today's Task
 In this practical, you will be creating a technical prototype of a rising and falling platform to better understand how Unity's physics engine works. Technical prototypes are an important part of game development, and involve experimenting with different approaches to solve a problem. They are also a great way to uncover new techniques and approaches that you may use later.
