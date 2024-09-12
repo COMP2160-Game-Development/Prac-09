@@ -106,7 +106,7 @@ Now our bumper moves up and comes back down! However, something you may notice -
 
 And this is our first bumper! Change the label text to reflect that this bumper is controlled using "Add Force".
 
-![](images/firstbumper.gif)
+![](images/FirstBumper.gif)
 
 ### Checkpoint! Save, commit and push your work now
 
@@ -164,9 +164,3 @@ By making a few changes to your code involving collisions and other forces, you 
 
 ### To receive full marks for today, show your demonstrator:
 * How you got your bumpers and balls reacting properly.
-
-
-
-
-
-
