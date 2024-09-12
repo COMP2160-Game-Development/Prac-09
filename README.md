@@ -113,13 +113,13 @@ We’re going to experiment with different ways of moving the bumper up and down
 
 Don't worry if some of your results are a bit weird - this is about stepping outside of your comfort zone and experimenting. This is where you become a true game developer!
 
-Create four versions of the Bumper script. Rename their file and class names to reflect what mode you are implementinh (Note: you could also achieve this with one or two copies and necessary enumerators/flags. It's up to you!):
+Create four versions of the Bumper script. Rename their file and class names to reflect what mode you are implementing (Note: you could also achieve this with one or two copies and necessary enumerators/flags. It's up to you!):
 
 * <b>Impulse:</b> When the player clicks the mouse, add an impulse to move the paddle towards the mouse position using rigidbody.AddForce() with [ForceMode.Impulse](https://docs.unity3d.com/ScriptReference/ForceMode.Impulse.html). 
 
-* <b>MovePosition:</b> Move the bumper upwards using [rigidbody.MovePosition()](https://docs.unity3d.com/ScriptReference/Rigidbody.MovePosition.html). Note: this will "teleport" the bumper unless used very careful. Turn on "Interpolate" for the Rigidbody to help with this.
+* <b>MovePosition:</b> Move the bumper upwards using [rigidbody.MovePosition()](https://docs.unity3d.com/ScriptReference/Rigidbody.MovePosition.html). Note that for this approach, the bumper will continue to move upwards as this is a movement, not a force - you'll need to turn off the "bump" bool (such as through a method for the button being released, or by setting a max height).
 
-* <b>Velocity:</b> Move the paddle towards the mouse position at a fixed velocity using [rigidbody.velocity](https://docs.unity3d.com/ScriptReference/Rigidbody-velocity.html).
+* <b>Velocity:</b> Move the paddle towards the mouse position at a fixed velocity using [rigidbody.velocity](https://docs.unity3d.com/ScriptReference/Rigidbody-velocity.html). Note that for this approach, the bumper will continue to move upwards as this is a consistantly applied velocity - you'll need to turn off the "bump" bool (such as through a method for the button being released, or by setting a max height).
 
 Create and line-up each of these implementations next to each other, changing the labels as you go. Run your game and observe the difference between them. Tweak some of the values.
 
@@ -145,14 +145,9 @@ Note: At this stage, you may have some bugs. Don't worry, this is what a technic
 * Any changes you made to the rigidbody components or script to get it moving right.
 
 ### Step 4 - Better Reactions
-At the moment, there are a few problems. Some you've likely found are:
+At the moment, there are a few problems. Things are getting there, but feeling a bit stiff.
 
-* The AddForce and Impulse bumpers move down very slowly, and so the balls aren't really very reactive.
-* The Velocity bumper just keeps moving upwards.
-* The Movement bumper just behaves oddly.
-* The player can spam space bar to have the bunmper just keep moving upwards, rather than it needing to have landed first.
-
-Think about how you can solve these problems and do some implementations. Consider if you need to add an other forces to your bumpers (hint: you can have more than one force impacting an object at once, such as a downwards "extra gravity" force). Also consider what other flags, such as an OnGround check, you might want to do when the bumpers collide with their floors. 
+Consider if you need to add an other forces to your bumpers (hint: you can have more than one force impacting an object at once, such as a downwards "extra gravity" force). Also consider what other flags, such as an OnGround check, you might want to do when the bumpers collide with their floors. 
 
 By making a few changes to your code involving collisions and other forces, you should be able to create some good bumper and ball reactions. Ask your demonstartor if you get stuck!
 
