@@ -23,101 +23,145 @@ The framework for today implements the general environment, including a "BumperP
 * Bumper: A cube with a texture and a Collider and a Rigidbody. Examine the Rigidbody component in the Inspector, with reference to the Rigidbody Scripting Reference: https://docs.unity3d.com/ScriptReference/Rigidbody.html. Make sure you know what is going on.
 * Label: A world-space canvas with a Text object. We will edit this text so can see which physics implementation is which.
 
-There is also a PlayerActions 
+There is also a `PlayerActions` InputActionsAsset and related script. Take a look, as you'll need to add this input into your scripts.
 
 ## Step 1 – Adding Forces (20 min) 
+
+### General set-up
 We will use our first Bumper prefab to begin experimenting with movement. Our goal is to have the "Bumper" move upwards when the player presses the space bar, and then move back down on its own.
 
 Up to now, we've moved everything using the transform component. While this is suitable for games that do not simulate physics, if we wanted to have our bumper react to other objects and external forces (like gravity), we need to start using the Physics engine. For this, we will be using the Rigidbody in non-kinematic mode, and normal Colliders over Triggers.
 
 Create a new script for our Bumper object. Remember to give it a meaningful name. I will be referring to it as the `Bumper` script throughout this sheet for clarity.
 
+As our object is going to be dependent on physics, we need to make sure the Rigidbody component isn't accidentally destroyed or removed. Above the class header for `Bumper`, add the directive `[RequireComponent(typeof(Rigidbody))]`.
 
-Play the game and note how the paddle moves and how it interacts with the walls and the puck. This current set up is invalid. The paddle has a collider but no rigidbody, i.e. it is a static collider. Static colliders should not be moved, as  Unity does not guarantee correct behaviour when you move a static collider. If we want to move an object using its transform, it should have a kinematic rigidbody.
+This line will ensure a Rigidbody is always added to the object. As you progress as a developer, adding these "rules" into your scripts is a good habit to get into. If your code expects a component to exist and be configured in a particular way, it is better to force this in code rather than rely on remembering to do it in the editor.
 
-Add the directive ```[RequireComponent(typeof(Rigidbody))]``` to the ControlPuck script so that it forces you to have a rigidbody on the paddle.
-
-Rather than relying on the designer to make the rigidbody kinematic in the editor, we can do it directly in code. In the Start method set the isKinematic field on the rigidbody to true:
+We also need to declare a new rigidbody variable and fetch it from our Bumper object:
 
 ```
 private Rigidbody rigidbody;
 ```
 ...
 ```
-Start()
+Awake()
 {
     rigidbody = GetComponent<Rigidbody>();
-    rigidbody.isKinematic = true;
 }
 ```
 
-This is generally good practice: If your code expects a component to exist and be configured in a particular way, it is better to force this in code rather than rely on remembering to do it in the editor.
+Now, add in the necessary code to read the "Bump" Input Action from the PlayerActions class. If you can't remember how to do this, revisit the Week 2 prac and ask your demonstrator for help. Remember you need to enable actions before you can read them.
 
-Play this version of the game. How does the kinematic rigidbody interact with static and dynamic objects in the scene?
+Once you have done all of this, attach the `Bumper` script to the `Bumper` prefab.
+
+### FixedUpdate and AddForce
+We are going to start by just adding a force to our bumper. As adding forces interacts with the physics engine, we want to do this in the `FixedUpdate()` rather than `Update()` method. We don't need to get into all the details here, but you can check out the lectures for more information on why we use `FixedUpdate()` over `Update()` for physics calculations, and not for things like transform movement or other game logic.
+
+The `AddForce()` method applies a force to the rigidbody, which is inputted as a Vector3. Much like when we used `Translate()`, we can therefore pass in a direction (such as Vector3.up) and a force value. Go ahead and create the necessary variables, such as a float paramater for the force amount (note: this number needs to be quite high!). Remember to give these values meaningful names.
+
+Then, add a call to the `FixedUpdate()` method, and call the `AddForce()` function on your rigidbody (replacing my example variable names with whatevery you set yours to):
+
+```
+void FixedUpdate()
+{
+    rigidbody.AddForce(Vector3.up * forceAmount * Time.fixedDeltaTime);
+}
+```
+
+Note we are now using `Time.fixedDeltaTime` instead, as we are working in FixedUpdate.
+
+If all goes well, when you hit play your bumper should fly up into the air and off the screen. This is because the force is being applied every single `FixedUpdate()`, so we never see it come back down.
+
+Instead, we want to have this force only be applied when the player presses the "Bump" button.
+
+## Step 2 – Adding Input (20 min)
+The difficulty with working with input and physics is that because of when `FixedUpdate()` is called, we do not want to call input here. Instead, we still want to handle all input happening during `Update()`.
+
+Following the event-driven input pattern, create a new method for reading when the Bump button is pressed. I'm calling mine "BumpPressed". We will use this method to set a boolean called `bump` to true:
+
+```
+void BumpPressed(InputAction.CallbackContext context)
+{
+    bump = true;
+    Debug.Log("Bump!");
+    }
+```
+
+Then, in our FixedUpdate, we will add an if statement to only apply force if bump is set to true, and then set bump to false once the force has been applied:
+
+```
+void FixedUpdate()
+{
+    if (bump)
+    {
+        rigidbody.AddForce(Vector3.up * forceAmount);
+        bump = false;
+    }
+}
+```
+You will see we have removed `Time.fixedDeltaTime`, as we are just applying the force once, then waiting for the input again, rather than constantly each `Update()` or `FixedUpdate()` call.
+
+Note: You can run into synchronisation issues between `Update()` and `FixedUpdate()` with input, especially when using polling. See the lecture slides for more info.
+
+Now our bumper moves up and comes back down! However, something you may notice - especially if you spam the bump button - is that our bumper is starting to shift a bit in place and rotating. This isn't quite what we want in this case, so we want to constrain certain elements of the rigidbody. Open the "Constraints" section on the Rigidbody component, and tick all the Rotation boxes to prevent it from rotating.
+
+And this is our first bumper! Change the label text to reflect that this bumper is controlled using "Add Force".
 
 ### Checkpoint! Save, commit and push your work now
 
-
-## Step 2 – Add Physics Materials & Constraints
-At the moment, the puck moves with the default settings for friction and bounciness, which are not very suitable for the game.
-
-Create separate [Physics Materials](https://docs.unity3d.com/2021.3/Documentation/Manual/class-PhysicMaterial.html) for the floor, walls, puck and paddle and attach them to the colliders for each. You may remember doing this in COMP1150.
-
-Experiment with the settings until the puck moves smoothly with low friction and bounces off the walls in an appropriate way.
-
-At the moment it is possible to make the puck bounce off the table. We probably don’t want this in the game. Add appropriate constraints to the puck’s rigidbody to keep it flat on the table.
-
-### Checkpoint! Save, commit and push your work now
-
-## Step 3 – Experiment with Paddle physics
-We’re going to experiment with different ways of moving the paddle using rigidbody physics rather than transform. Rather than providing you with the solution for each, we will be giving you the links to documentation and asking you to implement solutions in each one. 
+## Step 3 – Experiment with Bumper physics (30 min)
+We’re going to experiment with different ways of moving the bumper up and down using rigidbody physics. Rather than providing you with the solution for each, we will be giving you the links to documentation and asking you to implement solutions in each one. 
 
 Don't worry if some of your results are a bit weird - this is about stepping outside of your comfort zone and experimenting. This is where you become a true game developer!
 
-Disable the isKinematic flag on the paddle. 
-
-Make five copies of the paddle control script. Rename their file and class names as follows, and implement the corresponding control schemes:
-
-* <b>Position:</b> Move the paddle to the mouse position using [rigidbody.position](https://docs.unity3d.com/ScriptReference/Rigidbody-position.html).
-
-* <b>MovePosition:</b> Move the paddle to the mouse position using [rigidbody.MovePosition()](https://docs.unity3d.com/ScriptReference/Rigidbody.MovePosition.html).
-
-* <b>Velocity:</b> Move the paddle towards the mouse position at a fixed velocity using [rigidbody.velocity](https://docs.unity3d.com/ScriptReference/Rigidbody-velocity.html).
-
-* <b>AddForce:</b> Add a force to accelerate the paddle towards the mouse position using [rigidbody.AddForce()](https://docs.unity3d.com/ScriptReference/Rigidbody.AddForce.html).
+Create four versions of the Bumper script. Rename their file and class names to reflect what mode you are implementinh (Note: you could also achieve this with one or two copies and necessary enumerators/flags. It's up to you!):
 
 * <b>Impulse:</b> When the player clicks the mouse, add an impulse to move the paddle towards the mouse position using rigidbody.AddForce() with [ForceMode.Impulse](https://docs.unity3d.com/ScriptReference/ForceMode.Impulse.html). 
 
-Play the game using each of these controllers. Can you explain the behaviour of each? Which is the most appropriate for this game and why?
+* <b>MovePosition:</b> Move the bumper upwards using [rigidbody.MovePosition()](https://docs.unity3d.com/ScriptReference/Rigidbody.MovePosition.html). Note: this will "teleport" the bumper unless used very careful. Turn on "Interpolate" for the Rigidbody to help with this.
 
-Explore how the other parameters on the paddle’s rigidbody component (mass, drag, collision detection mode, etc) affect each version. Try and find your optimal puck movement.
+* <b>Velocity:</b> Move the paddle towards the mouse position at a fixed velocity using [rigidbody.velocity](https://docs.unity3d.com/ScriptReference/Rigidbody-velocity.html).
+
+Create and line-up each of these implementations next to each other, changing the labels as you go. Run your game and observe the difference between them. Tweak some of the values.
+
+### Adding balls
+Create spheres with rigidbodies and colliders on them, and place them above each bumper. Observe how they interact with their bumpers.
+
+For each version, make a few notes on the behaviour of each. Consider what each one is most appropriate for. Some scenarios to get you going:
+
+* Which one would be best for a moving platformer in a platformer game?
+* Which one would be best for an elevator in an RPG or action game?
+* Which one would be best for a pinball game?
+
+Explore how the other parameters on the bumper and ball rigidbody components ( drag, collision detection mode, etc) affect each version. Try and find your optimal bumper movement. You can also try adding some [Physic Materials](https://docs.unity3d.com/560/Documentation/Manual/class-PhysicMaterial.html) to see how this influences things.
+
+Note: At this stage, you may have some bugs. Don't worry, this is what a technical prototype is all about. You will be fixing these bugs for the full-mark.
 
 ## Checkpoint! Save, commit and push your work now
 
-### To receive half marks for today, show your tutor:
+### To receive half marks for today, show your demonstrator:
 
-* Your five scripts, each with different methods of moving the puck.
-* Your findings from experimenting with each, and which one you think is best.
-* Any changes you made to the paddle's rigidbody component or script to get it moving right.
+* Your four approaches to moving the Bumper up and down using physics
+* Your findings from experimenting with each, and what each one is good for.
+* Any changes you made to the rigidbody components or script to get it moving right.
 
-### Step 4 - Sound Effects
-We want to add a sound effect when the puck collides with something.
+### Step 4 - Better Reactions
+At the moment, there are a few problems. Some you've likely found are:
 
-Use the [Chiptone tool](https://sfbgames.itch.io/chiptone) to generate an appropriate sound effect. When you’ve made something you like, download it and add it to your project.
+* The AddForce and Impulse bumpers move down very slowly, and so the balls aren't really very reactive.
+* The Velocity bumper just keeps moving upwards.
+* The Movement bumper just behaves oddly.
+* The player can spam space bar to have the bunmper just keep moving upwards, rather than it needing to have landed first.
 
-Add an [AudioSource](https://docs.unity3d.com/Manual/class-AudioSource.html) to the puck which plays this effect. Make sure you disable looping and Play on Awake.
+Think about how you can solve these problems and do some implementations. Consider if you need to add an other forces to your bumpers (hint: you can have more than one force impacting an object at once, such as a downwards "extra gravity" force). Also consider what other flags, such as an OnGround check, you might want to do when the bumpers collide with their floors. 
 
-Add a script to the puck that detects a collision event and tells the Audio Source component to play. 
-
-Using the data in the Collision object, change the volume of the sound effect so it varies depending on the strength of the collision. (Hint: check the docs for [Collision](https://docs.unity3d.com/ScriptReference/Collision.html)!)
-
+By making a few changes to your code involving collisions and other forces, you should be able to create some good bumper and ball reactions. Ask your demonstartor if you get stuck!
 
 ## Prac complete! Save, commit and push your work now
 
-### To receive full marks for today, show your tutor:
-
-* Your working audio on collision between puck and other objects.
-* How you are modulating volume based on collision strength.
+### To receive full marks for today, show your demonstrator:
+* How you got your bumpers and balls reacting properly.
 
 
 
