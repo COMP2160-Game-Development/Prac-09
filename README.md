@@ -2,28 +2,37 @@
 
 ## Topics covered:
 * Rigidbody Physics
+* Update vs FixedUpdate
 * Collisions
-* Audio
 
 ## Non-Discussion Question
-There is no discussion question today. Instead, we'd like to give you some time to fill out the relevant Student Feedback Surveys for this unit. This will include a survey on the unit as a whole. If you are in Cameron's pracs, there will also be an open LET on his teaching. If you are in Kayson's pracs, you'll their LET will be opening in a couple of weeks - please fill these out too! You can access these surveys through your email, or by clicking on the link in the top right of iLearn on desktop, and the top block after your units on mobile. It looks something like  this:
+There is no discussion question today. Happy coding!
 
-![An image of the student survey block, which states how many surveys are avaliable](images/Week10_studentsurveys.png)
-
-Please take 10-15 minutes to fill these out. Your responses are very important to us, and are completely anonymous. We also do not receive the results until after grade finalisation. Open and honest results help us improve the unit.
+<img src="images/codingdog.gif" alt="a happy dog coding. Image source: https://es.pixilart.com/art/coding-dogo-sr2712ab0b35ecd" width="300" />
 
 ## Today's Task
-This practical is all about experimenting with physics in Unity to better understand how it works. More than ever, it is important you experiment, read the docs, and justify your decisions. And have fun!
+In this practical, you will be creating a technical prototype of a rising and falling platform to better understand how Unity's physics engine works. Technical prototypes are an important part of game development, and involve experimenting with different approaches to solve a problem. They are also a great way to uncover new techniques and approaches that you may use later.
 
-You will be experimenting with physics in order to create an air-hockey game like this:
+Next week, you will be putting what you learnt this week into action to create a game using the physics engine. So, complete this practical (or at least the half-mark) before starting Week 10. Hae fun!
 
-![An image of an air hockey game in Unity. The table is brown, with a black and white puck and a red paddle](images/Week10_hockeypuck.png)
- 
-The framework implements the table, a puck (black and white) and a paddle (red and black). 
-* The puck has a [rigidbody](https://docs.unity3d.com/ScriptReference/Rigidbody.html) component and is controlled by physics. Examine it in the inspector and make sure you understand what is going on.
-* The paddle has a ```ControlPuck``` script that uses ray casting to convert the mouse position into a point on the table and moves the paddle to that position. Open the script and examine it to understand what is going on.
+You can check out an implementation of this technical prototype here: https://uncanny-machines.itch.io/comp2160-week-09-sample
 
-## Step 1 – Adding a Kinematic Rigidbody 
+### The project
+The framework for today implements the general environment, including a "BumperPrefab" object which includes the following components:
+* Floor: A cube with a texture and a Collider, but no Rigidbody. It is therefore static and does not move.
+* Bumper: A cube with a texture and a Collider and a Rigidbody. Examine the Rigidbody component in the Inspector, with reference to the Rigidbody Scripting Reference: https://docs.unity3d.com/ScriptReference/Rigidbody.html. Make sure you know what is going on.
+* Label: A world-space canvas with a Text object. We will edit this text so can see which physics implementation is which.
+
+There is also a PlayerActions 
+
+## Step 1 – Adding Forces (20 min) 
+We will use our first Bumper prefab to begin experimenting with movement. Our goal is to have the "Bumper" move upwards when the player presses the space bar, and then move back down on its own.
+
+Up to now, we've moved everything using the transform component. While this is suitable for games that do not simulate physics, if we wanted to have our bumper react to other objects and external forces (like gravity), we need to start using the Physics engine. For this, we will be using the Rigidbody in non-kinematic mode, and normal Colliders over Triggers.
+
+Create a new script for our Bumper object. Remember to give it a meaningful name. I will be referring to it as the `Bumper` script throughout this sheet for clarity.
+
+
 Play the game and note how the paddle moves and how it interacts with the walls and the puck. This current set up is invalid. The paddle has a collider but no rigidbody, i.e. it is a static collider. Static colliders should not be moved, as  Unity does not guarantee correct behaviour when you move a static collider. If we want to move an object using its transform, it should have a kinematic rigidbody.
 
 Add the directive ```[RequireComponent(typeof(Rigidbody))]``` to the ControlPuck script so that it forces you to have a rigidbody on the paddle.

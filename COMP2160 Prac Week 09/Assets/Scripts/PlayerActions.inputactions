@@ -2,28 +2,28 @@
     "name": "PlayerActions",
     "maps": [
         {
-            "name": "PuckControl",
+            "name": "BumperControl",
             "id": "3d0d94fd-2a9c-43b0-af50-bae14a4d5617",
             "actions": [
                 {
-                    "name": "MovePuck",
-                    "type": "Value",
-                    "id": "9e852e9f-d7b2-4bce-8083-12a8f374546f",
-                    "expectedControlType": "Vector2",
+                    "name": "Bump",
+                    "type": "Button",
+                    "id": "47485c87-23d1-45a0-8c51-668c0011c981",
+                    "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
-                    "initialStateCheck": true
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
                 {
                     "name": "",
-                    "id": "91811c8b-02e6-4846-b135-18dce3c2fffb",
-                    "path": "<Mouse>/position",
+                    "id": "bf70ea04-c620-4833-be36-c1ed84f5e651",
+                    "path": "<Keyboard>/space",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "MovePuck",
+                    "action": "Bump",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
