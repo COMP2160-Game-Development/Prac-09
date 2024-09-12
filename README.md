@@ -106,6 +106,8 @@ Now our bumper moves up and comes back down! However, something you may notice -
 
 And this is our first bumper! Change the label text to reflect that this bumper is controlled using "Add Force".
 
+![](images/firstbumper.gif)
+
 ### Checkpoint! Save, commit and push your work now
 
 ## Step 3 – Experiment with Bumper physics (30 min)
@@ -123,8 +125,13 @@ Create four versions of the Bumper script. Rename their file and class names to 
 
 Create and line-up each of these implementations next to each other, changing the labels as you go. Run your game and observe the difference between them. Tweak some of the values.
 
-### Adding balls
-Create spheres with rigidbodies and colliders on them, and place them above each bumper. Observe how they interact with their bumpers.
+### Adding balls & A Ceiling
+Create spheres with rigidbodies and colliders on them, and place them above each bumper. Observe how they interact with their bumpers. Add a static ceiling by creating a new cube with a collider but no rigidbody and place it above your objects.
+
+
+Your scene should look something like this:
+
+![](images/halfwaymark.gif)
 
 For each version, make a few notes on the behaviour of each. Consider what each one is most appropriate for. Some scenarios to get you going:
 
@@ -133,6 +140,8 @@ For each version, make a few notes on the behaviour of each. Consider what each 
 * Which one would be best for a pinball game?
 
 Explore how the other parameters on the bumper and ball rigidbody components ( drag, collision detection mode, etc) affect each version. Try and find your optimal bumper movement. You can also try adding some [Physic Materials](https://docs.unity3d.com/560/Documentation/Manual/class-PhysicMaterial.html) to see how this influences things.
+
+
 
 Note: At this stage, you may have some bugs. Don't worry, this is what a technical prototype is all about. You will be fixing these bugs for the full-mark.
 
