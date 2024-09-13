@@ -1,4 +1,4 @@
-# COMP2160 Game Development – Prac Week 10
+# COMP2160 Game Development – Prac Week 9
 
 ## Topics covered:
 * Rigidbody Physics
