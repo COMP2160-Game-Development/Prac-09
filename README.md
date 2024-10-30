@@ -13,8 +13,6 @@ There is no discussion question today. Happy coding!
 ## Today's Task
 In this practical, you will be creating a technical prototype of a rising and falling platform to better understand how Unity's physics engine works. Technical prototypes are an important part of game development, and involve experimenting with different approaches to solve a problem. They are also a great way to uncover new techniques and approaches that you may use later.
 
-Next week, you will be putting what you learnt this week into action to create a game using the physics engine. So, complete this practical (or at least the half-mark) before starting Week 10. Hae fun!
-
 You can check out an implementation of this technical prototype here: https://uncanny-machines.itch.io/comp2160-week-09-sample
 
 ### The project
@@ -51,7 +49,7 @@ Awake()
 }
 ```
 
-Once you have done all of this, attach the `Bumper` script to the `Bumper` prefab.
+Once you have done all of this, attach the `Bumper` script to the `Bumper` object, which is a child of the 'BumperPrefab' object.
 
 ### FixedUpdate and AddForce
 We are going to start by just adding a force to our bumper. As adding forces interacts with the physics engine, we want to do this in the `FixedUpdate()` rather than `Update()` method. We don't need to get into all the details here, but you can check out the lectures for more information on why we use `FixedUpdate()` over `Update()` for physics calculations, and not for things like transform movement or other game logic.
@@ -117,11 +115,11 @@ Don't worry if some of your results are a bit weird - this is about stepping out
 
 Create four versions of the Bumper script. Rename their file and class names to reflect what mode you are implementing (Note: you could also achieve this with one or two copies and necessary enumerators/flags. It's up to you!):
 
-* <b>Impulse:</b> When the player clicks the mouse, add an impulse to move the paddle towards the mouse position using rigidbody.AddForce() with [ForceMode.Impulse](https://docs.unity3d.com/ScriptReference/ForceMode.Impulse.html). 
+* <b>Impulse:</b> When the player presses space\, add an impulse to move the bumper upwards using rigidbody.AddForce() with [ForceMode.Impulse](https://docs.unity3d.com/ScriptReference/ForceMode.Impulse.html). 
 
 * <b>MovePosition:</b> Move the bumper upwards using [rigidbody.MovePosition()](https://docs.unity3d.com/ScriptReference/Rigidbody.MovePosition.html). Note that for this approach, the bumper will continue to move upwards as this is a movement, not a force - you'll need to turn off the "bump" bool (such as through a method for the button being released, or by setting a max height).
 
-* <b>Velocity:</b> Move the paddle towards the mouse position at a fixed velocity using [rigidbody.velocity](https://docs.unity3d.com/ScriptReference/Rigidbody-velocity.html). Note that for this approach, the bumper will continue to move upwards as this is a consistantly applied velocity - you'll need to turn off the "bump" bool (such as through a method for the button being released, or by setting a max height).
+* <b>Velocity:</b> Move the bumper upwards at a fixed velocity using [rigidbody.velocity](https://docs.unity3d.com/ScriptReference/Rigidbody-velocity.html). Note that for this approach, the bumper will continue to move upwards as this is a consistantly applied velocity - you'll need to turn off the "bump" bool (such as through a method for the button being released, or by setting a max height).
 
 Create and line-up each of these implementations next to each other, changing the labels as you go. Run your game and observe the difference between them. Tweak some of the values.
 
@@ -135,7 +133,7 @@ Your scene should look something like this:
 
 For each version, make a few notes on the behaviour of each. Consider what each one is most appropriate for. Some scenarios to get you going:
 
-* Which one would be best for a moving platformer in a platformer game?
+* Which one would be best for a moving platform in a platformer game?
 * Which one would be best for an elevator in an RPG or action game?
 * Which one would be best for a pinball game?
 
@@ -154,7 +152,7 @@ Note: At this stage, you may have some bugs. Don't worry, this is what a technic
 * Any changes you made to the rigidbody components or script to get it moving right.
 
 ### Step 4 - Better Reactions
-At the moment, there are a few problems. Things are getting there, but feeling a bit stiff.
+At the moment, there are a few problems. Things are getting there, but feeling a bit stiff. Pick one of the examples from above (moving platform, elevator, pinball bumper) and see if you can get one of your four bumpers simulating that experience nicely.
 
 Consider if you need to add an other forces to your bumpers (hint: you can have more than one force impacting an object at once, such as a downwards "extra gravity" force). Also consider what other flags, such as an OnGround check, you might want to do when the bumpers collide with their floors. 
 
